@@ -1,47 +1,48 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.hogwarts.school.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Optional;
 
+@Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private long currentId = 1;
+        private final StudentRepository studentRepository;
 
-    public List<Student> getAllStudents() {
-        return students.values().stream().collect(Collectors.toList());
-    }
-
-    public Student getStudentById(long id) {
-        return students.get(id);
-    }
-
-    public Student createStudent(Student student) {
-        student.setId(currentId++);
-        students.put(student.getId(), student);
-        return student;
-    }
-
-    public Student updateStudent(Long id, Student student) {
-        if (students.containsKey(id)) {
-            student.setId(id);
-            students.put(id, student);
-            return student;
+        @Autowired
+        public StudentService(StudentRepository studentRepository) {
+            this.studentRepository = studentRepository;
         }
-        return null;
-    }
 
-    public void deleteStudent(long id) {
-        students.remove(id);
-    }
+        public List<Student> getAllStudents() {
+            return studentRepository.findAll();
+        }
 
-    public List<Student> getStudentsByAge(int age) {
-        return students.values().stream().
-                filter(student -> student.getAge() == age)
-                .collect(Collectors.toList());
+        public Optional<Student> getStudentById(Long id) {
+            return studentRepository.findById(id);
+        }
+
+        public Student createStudent(Student student) {
+            return studentRepository.save(student);
+        }
+
+        public Student updateStudent(Long id, Student student) {
+            return studentRepository.findById(id)
+                    .map(existingStudent -> {
+                        existingStudent.setName(student.getName());
+                        existingStudent.setAge(student.getAge());
+                        return studentRepository.save(existingStudent);
+                    })
+                    .orElseGet(() -> {
+                        student.setId(id);
+                        return studentRepository.save(student);
+                    });
+        }
+
+        public void deleteStudent(Long id) {
+            studentRepository.deleteById(id);
+        }
     }
-}

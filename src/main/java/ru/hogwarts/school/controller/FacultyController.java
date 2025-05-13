@@ -25,20 +25,25 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Faculty> updateFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
-        Faculty updatedFaculty = facultyService.updateFaculty(id, faculty);
-        if (updatedFaculty == null) {
-            return new ResponseEntity<>(updatedFaculty,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(faculty, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Faculty> getFacultyById(@PathVariable Long id) {
+        return facultyService.getFacultyById(id)
+                .map(faculty -> new ResponseEntity<>(faculty, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @PostMapping
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.createFaculty(faculty);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Faculty> updateFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
+        return new ResponseEntity<>(facultyService.updateFaculty(id, faculty), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    @GetMapping("/{color}")
-    public List<Faculty> getFacultiesByColor(@PathVariable String color) {
-        return facultyService.getFacultiesByColor(color);
     }
 }
