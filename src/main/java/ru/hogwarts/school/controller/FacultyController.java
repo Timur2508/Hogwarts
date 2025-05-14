@@ -1,11 +1,12 @@
 package ru.hogwarts.school.controller;
 
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
 
@@ -45,5 +46,15 @@ public class FacultyController {
     public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/search")
+    public List<Faculty> getFacultiesByNameOrColor(@RequestParam String query) {
+        return facultyService.getFacultiesByNameOrColor(query);
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<List<Student>> getStudentsByFacultyId(@PathVariable Long id) {
+        return new ResponseEntity<>(facultyService.getStudentsByFacultyId(id), HttpStatus.OK);
     }
 }

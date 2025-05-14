@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,17 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/age")
+    public List<Student> getStudentsByAgeRange(@RequestParam int min, @RequestParam int max) {
+        return studentService.getStudentsByAgeRange(min, max);
+    }
+
+    @GetMapping("/{id}/faculty")
+    public ResponseEntity<Faculty> getFacultyByStudentId(@PathVariable Long id) {
+        return studentService.getFacultyByStudentId(id)
+                .map(faculty -> new ResponseEntity<>(faculty, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
