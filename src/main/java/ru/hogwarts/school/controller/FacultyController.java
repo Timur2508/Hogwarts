@@ -2,11 +2,11 @@ package ru.hogwarts.school.controller;
 
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.FacultyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
 
@@ -33,8 +33,8 @@ public class FacultyController {
     }
 
     @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
+        return new ResponseEntity<>(facultyService.createFaculty(faculty), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -54,7 +54,7 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<Student>> getStudentsByFacultyId(@PathVariable Long id) {
-        return new ResponseEntity<>(facultyService.getStudentsByFacultyId(id), HttpStatus.OK);
+    public List<Student> getStudentsByFacultyId(@PathVariable Long id) {
+        return facultyService.getStudentsByFacultyId(id);
     }
 }

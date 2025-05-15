@@ -33,8 +33,8 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        return new ResponseEntity<>(studentService.createStudent(student), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

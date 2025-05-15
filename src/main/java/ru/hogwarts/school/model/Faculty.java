@@ -11,10 +11,9 @@ public class Faculty {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "faculty")
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<Student> students;
 
-    // Конструкторы, геттеры и сеттеры
     public Faculty() {}
 
     public Faculty(String name, String color) {
