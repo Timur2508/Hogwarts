@@ -1,10 +1,10 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,46 +12,45 @@ import java.util.Optional;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
 
-    @Autowired
-    public FacultyService(FacultyRepository facultyRepository) {
+    public FacultyService(FacultyRepository facultyRepository,
+                          StudentRepository studentRepository) {
         this.facultyRepository = facultyRepository;
+        this.studentRepository = studentRepository;
     }
 
-    public List<Faculty> getAllFaculties() {
-        return facultyRepository.findAll();
+    // Метод для получения студентов факультета
+    public List<Student> getStudents(Long facultyId) {
+        return studentRepository.findByFacultyId(facultyId);
+    }
+
+    // Другие методы сервиса...
+    public Faculty createFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
     public Optional<Faculty> getFacultyById(Long id) {
         return facultyRepository.findById(id);
     }
 
-    public Faculty createFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
-    }
-
     public Faculty updateFaculty(Long id, Faculty faculty) {
-        return facultyRepository.findById(id)
-                .map(existingFaculty -> {
-                    existingFaculty.setName(faculty.getName());
-                    existingFaculty.setColor(faculty.getColor());
-                    return facultyRepository.save(existingFaculty);
-                })
-                .orElseGet(() -> {
-                    faculty.setId(id);
-                    return facultyRepository.save(faculty);
-                });
+        return null;
     }
 
     public void deleteFaculty(Long id) {
-        facultyRepository.deleteById(id);
+
     }
 
     public List<Faculty> getFacultiesByNameOrColor(String query) {
-        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(query, query);
+        return null;
     }
 
     public List<Student> getStudentsByFacultyId(Long id) {
-        return facultyRepository.findById(id).map(Faculty::getStudents).orElse(List.of());
+        return null;
+    }
+
+    public List<Faculty> getAllFaculties() {
+        return null;
     }
 }

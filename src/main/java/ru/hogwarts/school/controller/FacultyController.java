@@ -3,7 +3,6 @@ package ru.hogwarts.school.controller;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import java.util.List;
 public class FacultyController {
     private final FacultyService facultyService;
 
-    @Autowired
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }

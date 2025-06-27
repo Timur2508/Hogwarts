@@ -12,7 +12,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,9 +28,26 @@ public class StudentControllerWebMvcTest {
     @MockBean
     private StudentService studentService;
 
+    private Student createTestStudent(String name, int age) {
+        Student student = new Student();
+        student.setName(name);
+        student.setAge(age);
+        return student;
+    }
+
+    private Faculty createTestFaculty(String name, String color) {
+        Faculty faculty = new Faculty();
+        faculty.setName(name);
+        faculty.setColor(color);
+        return faculty;
+    }
+
     @Test
     public void testGetAllStudents() throws Exception {
-        when(studentService.getAllStudents()).thenReturn(Arrays.asList(new Student("John Doe", 20), new Student("Jane Doe", 22)));
+        Student student1 = createTestStudent("John Doe", 20);
+        Student student2 = createTestStudent("Jane Doe", 22);
+
+        when(studentService.getAllStudents()).thenReturn(Arrays.asList(student1, student2));
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
@@ -39,7 +56,8 @@ public class StudentControllerWebMvcTest {
 
     @Test
     public void testGetStudentById() throws Exception {
-        when(studentService.getStudentById(1L)).thenReturn(Optional.of(new Student("John Doe", 20)));
+        Student student = createTestStudent("John Doe", 20);
+        when(studentService.getStudentById(1L)).thenReturn(student);
 
         mockMvc.perform(get("/students/1"))
                 .andExpect(status().isOk())
@@ -48,7 +66,7 @@ public class StudentControllerWebMvcTest {
 
     @Test
     public void testCreateStudent() throws Exception {
-        Student student = new Student("John Doe", 20);
+        Student student = createTestStudent("John Doe", 20);
         when(studentService.createStudent(any(Student.class))).thenReturn(student);
 
         mockMvc.perform(post("/students")
@@ -60,7 +78,7 @@ public class StudentControllerWebMvcTest {
 
     @Test
     public void testUpdateStudent() throws Exception {
-        Student student = new Student("Jane Doe", 22);
+        Student student = createTestStudent("Jane Doe", 22);
         when(studentService.updateStudent(any(Long.class), any(Student.class))).thenReturn(student);
 
         mockMvc.perform(put("/students/1")
@@ -78,7 +96,8 @@ public class StudentControllerWebMvcTest {
 
     @Test
     public void testGetStudentsByAgeRange() throws Exception {
-        when(studentService.getStudentsByAgeRange(10, 20)).thenReturn(Arrays.asList(new Student("John Doe", 20)));
+        Student student = createTestStudent("John Doe", 20);
+        when(studentService.getStudentsByAgeRange(10, 20)).thenReturn(Arrays.asList(student));
 
         mockMvc.perform(get("/students/age?min=10&max=20"))
                 .andExpect(status().isOk())
@@ -87,7 +106,8 @@ public class StudentControllerWebMvcTest {
 
     @Test
     public void testGetFacultyByStudentId() throws Exception {
-        when(studentService.getFacultyByStudentId(1L)).thenReturn(Optional.of(new Faculty("Gryffindor", "Red")));
+        Faculty faculty = createTestFaculty("Gryffindor", "Red");
+        when(studentService.getFacultyByStudentId(1L)).thenReturn(faculty);
 
         mockMvc.perform(get("/students/1/faculty"))
                 .andExpect(status().isOk())

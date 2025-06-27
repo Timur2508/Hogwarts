@@ -17,6 +17,13 @@ public class StudentControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private Student createTestStudent(String name, int age) {
+        Student student = new Student();
+        student.setName(name);
+        student.setAge(age);
+        return student;
+    }
+
     @Test
     public void testGetAllStudents() {
         ResponseEntity<Student[]> response = restTemplate.getForEntity("/students", Student[].class);
@@ -33,7 +40,7 @@ public class StudentControllerTest {
 
     @Test
     public void testCreateStudent() {
-        Student student = new Student("John Doe", 20);
+        Student student = createTestStudent("John Doe", 20);
         ResponseEntity<Student> response = restTemplate.postForEntity("/students", student, Student.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
@@ -41,7 +48,7 @@ public class StudentControllerTest {
 
     @Test
     public void testUpdateStudent() {
-        Student student = new Student("Jane Doe", 22);
+        Student student = createTestStudent("Jane Doe", 22);
         restTemplate.put("/students/1", student);
         ResponseEntity<Student> response = restTemplate.getForEntity("/students/1", Student.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
