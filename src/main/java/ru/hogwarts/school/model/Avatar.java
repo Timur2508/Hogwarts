@@ -7,36 +7,18 @@ public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private byte[] data;
-
     private String filePath;
     private long fileSize;
     private String mediaType;
+    @Lob
+    private byte[] data;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
+    @OneToOne
     private Student student;
 
-    public Avatar() {}
-
-    public Avatar(Long id, String filePath, long fileSize, String mediaType) {
-        this.id = id;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
-        this.mediaType = mediaType;
-    }
-
+    // Геттеры и сеттеры
     public Long getId() {
         return id;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
     }
 
     public void setId(Long id) {
@@ -67,21 +49,19 @@ public class Avatar {
         this.mediaType = mediaType;
     }
 
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
     public Student getStudent() {
         return student;
     }
 
     public void setStudent(Student student) {
         this.student = student;
-    }
-
-    @Override
-    public String toString() {
-        return "Avatar{" +
-                "id=" + id +
-                ", filePath='" + filePath + '\'' +
-                ", fileSize=" + fileSize +
-                ", mediaType='" + mediaType + '\'' +
-                '}';
     }
 }

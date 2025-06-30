@@ -29,7 +29,6 @@ public class Student {
 
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -62,7 +61,6 @@ public class Student {
         this.faculty = faculty;
     }
 
-    // equals и hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

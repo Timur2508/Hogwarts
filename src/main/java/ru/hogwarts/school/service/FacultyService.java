@@ -20,12 +20,10 @@ public class FacultyService {
         this.studentRepository = studentRepository;
     }
 
-    // Метод для получения студентов факультета
     public List<Student> getStudents(Long facultyId) {
         return studentRepository.findByFacultyId(facultyId);
     }
 
-    // Другие методы сервиса...
     public Faculty createFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);
     }

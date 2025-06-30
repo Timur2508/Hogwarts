@@ -1,13 +1,14 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/faculties")
@@ -24,26 +25,26 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Faculty> getFacultyById(@PathVariable Long id) {
+    public Faculty getFacultyById(@PathVariable Long id) {
         return facultyService.getFacultyById(id)
-                .map(faculty -> new ResponseEntity<>(faculty, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculty not found"));
     }
 
     @PostMapping
-    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
-        return new ResponseEntity<>(facultyService.createFaculty(faculty), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Faculty createFaculty(@RequestBody Faculty faculty) {
+        return facultyService.createFaculty(faculty);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Faculty> updateFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
-        return new ResponseEntity<>(facultyService.updateFaculty(id, faculty), HttpStatus.OK);
+    public Faculty updateFaculty(@PathVariable Long id, @RequestBody Faculty faculty) {
+        return facultyService.updateFaculty(id, faculty);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/search")

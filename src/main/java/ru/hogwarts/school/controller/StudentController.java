@@ -1,9 +1,11 @@
 package ru.hogwarts.school.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AvatarService;
@@ -11,6 +13,7 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/students")
@@ -24,97 +27,80 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentService.getAllStudents();
-        return ResponseEntity.ok(students);
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
-        Student student = studentService.getStudentById(id);
-        return student != null
-                ? ResponseEntity.ok(student)
-                : ResponseEntity.notFound().build();
+    public Student getStudentById(@PathVariable Long id) {
+        return studentService.getStudentById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student createdStudent = studentService.createStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Student createStudent(@RequestBody Student student) {
+        return studentService.createStudent(student);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id,
-                                                 @RequestBody Student student) {
-        Student updatedStudent = studentService.updateStudent(id, student);
-        return ResponseEntity.ok(updatedStudent);
+    public Student updateStudent(@PathVariable Long id, @RequestBody Student student) {
+        return studentService.updateStudent(id, student);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/age")
-    public ResponseEntity<List<Student>> getStudentsByAgeRange(
+    public List<Student> getStudentsByAgeRange(
             @RequestParam int min,
             @RequestParam int max) {
-        List<Student> students = studentService.getStudentsByAgeRange(min, max);
-        return ResponseEntity.ok(students);
+        return studentService.getStudentsByAgeRange(min, max);
     }
 
     @GetMapping("/{id}/faculty")
-    public ResponseEntity<Faculty> getFacultyByStudentId(@PathVariable Long id) {
-        Faculty faculty = studentService.getFacultyByStudentId(id);
-        return faculty != null
-                ? ResponseEntity.ok(faculty)
-                : ResponseEntity.notFound().build();
+    public Faculty getFacultyByStudentId(@PathVariable Long id) {
+        return studentService.getFacultyByStudentId(id);
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Integer> getTotalStudentsCount() {
-        int count = studentService.getTotalStudentsCount();
-        return ResponseEntity.ok(count);
+    public int getTotalStudentsCount() {
+        return studentService.getTotalStudentsCount();
     }
 
     @GetMapping("/average-age")
-    public ResponseEntity<Double> getAverageAge() {
-        double averageAge = studentService.getAverageAge();
-        return ResponseEntity.ok(averageAge);
+    public double getAverageAge() {
+        return studentService.getAverageAge();
     }
 
     @GetMapping("/last-five")
-    public ResponseEntity<List<Object>> getLastFiveStudents() {
-        List<Object> students = studentService.getLastFiveStudents();
-        return ResponseEntity.ok(students);
+    public List<Object> getLastFiveStudents() {
+        return studentService.getLastFiveStudents();
     }
 
     @PostMapping("/{id}/avatar")
-    public ResponseEntity<String> uploadAvatar(
-            @PathVariable Long id,
-            @RequestParam MultipartFile avatar) throws IOException {
+    public String uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(id, avatar);
-        return ResponseEntity.ok("Avatar uploaded successfully");
+        return "Avatar uploaded successfully";
     }
 
-    @GetMapping("/{id}/avatar")
-    public ResponseEntity<byte[]> getAvatar(@PathVariable Long id) {
-        byte[] avatar = avatarService.getAvatar(id);
-        return avatar != null
-                ? ResponseEntity.ok(avatar)
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<byte[]> getAvatarByStudentId(Long studentId) {
+        Avatar avatar = avatarService.findAvatar(studentId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(avatar.getMediaType()))
+                .contentLength(avatar.getFileSize())
+                .body(avatar.getData());
     }
 
     @GetMapping("/name-starts-with-a")
-    public ResponseEntity<List<String>> getStudentsNameStartsWithA() {
-        List<String> names = studentService.getStudentsNameStartsWithA();
-        return ResponseEntity.ok(names);
+    public List<String> getStudentsNameStartsWithA() {
+        return studentService.getStudentsNameStartsWithA();
     }
 
     @GetMapping("/average-age-stream")
-    public ResponseEntity<Double> getAverageAgeUsingStream() {
-        double averageAge = studentService.getAverageAgeUsingStream();
-        return ResponseEntity.ok(averageAge);
+    public double getAverageAgeUsingStream() {
+        return studentService.getAverageAgeUsingStream();
     }
 }
