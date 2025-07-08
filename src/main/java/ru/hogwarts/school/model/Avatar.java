@@ -16,7 +16,6 @@ public class Avatar {
     @OneToOne
     private Student student;
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
