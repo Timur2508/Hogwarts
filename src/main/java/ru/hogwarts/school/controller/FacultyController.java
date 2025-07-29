@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,5 +56,14 @@ public class FacultyController {
     @GetMapping("/{id}/students")
     public List<Student> getStudentsByFacultyId(@PathVariable Long id) {
         return facultyService.getStudentsByFacultyId(id);
+    }
+
+    @GetMapping("/longest-name")
+    public String getLongestFacultyName() {
+        return facultyService.getAllFaculties().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "No faculties found"));
     }
 }
