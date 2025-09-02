@@ -4,17 +4,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.stream.Stream;
+import ru.hogwarts.school.service.InfoService;
 
 @RestController
 @Tag(name = "Контроллер по работе с портом")
 public class InfoController {
 
     private final int port;
-
-    public InfoController(@Value("${server.port}") int port) {
+    private final InfoService infoService;
+    public InfoController(@Value("${server.port}") int port, InfoService infoService) {
         this.port = port;
+        this.infoService = infoService;
     }
 
     @GetMapping(path = "getPort")
@@ -24,29 +24,6 @@ public class InfoController {
 
     @GetMapping
     public String checkStreamIterator() {
-        long before = System.currentTimeMillis();
-        int sum = calcSum();
-        long after = System.currentTimeMillis();
-
-        long beforeImpr = System.currentTimeMillis();
-        int sumImpr = calcSumImpr();
-        long afterImpr = System.currentTimeMillis();
-
-        return "Sum: " + sum + "; Time: " + (after - before) + "ms | " +
-                "SumImpr: " + sumImpr + "; Time: " + (afterImpr - beforeImpr) + "ms";
+        return infoService.checkStreamIterator();
     }
-
-    private int calcSum() {
-        return Stream.iterate(1, a -> a + 1)
-                .limit(1_000_000)
-                .reduce(0, Integer::sum);
-    }
-
-    private int calcSumImpr() {
-        return Stream.iterate(1, a -> a + 1)
-                .parallel()
-                .limit(1_000_000)
-                .reduce(0, Integer::sum);
-    }
-
 }
