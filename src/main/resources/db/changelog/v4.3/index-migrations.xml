@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <!-- Индекс для поиска по имени студента -->
+    <changeSet id="create-student-name-index" author="Evloev">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="student"/>
+            <not>
+                <indexExists indexName="idx_student_name" tableName="student"/>
+            </not>
+        </preConditions>
+
+        <createIndex tableName="student" indexName="idx_student_name">
+            <column name="name" type="varchar(255)"/>
+        </createIndex>
+
+        <comment>Создание индекса для поля name в таблице student</comment>
+    </changeSet>
+
+    <!-- Составной индекс для поиска по названию и цвету факультета -->
+    <changeSet id="create-faculty-name-color-index" author="Evloev">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="faculty"/>
+            <not>
+                <indexExists indexName="idx_faculty_name_color" tableName="faculty"/>
+            </not>
+        </preConditions>
+
+        <createIndex tableName="faculty" indexName="idx_faculty_name_color">
+            <column name="name" type="varchar(255)"/>
+            <column name="color" type="varchar(50)"/>
+        </createIndex>
+
+        <comment>Создание составного индекса для полей name и color в таблице faculty</comment>
+    </changeSet>
+</databaseChangeLog>

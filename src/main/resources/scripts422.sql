@@ -1,0 +1,17 @@
+CREATE TABLE Car (
+    car_id SERIAL PRIMARY KEY,
+    brand VARCHAR(100) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE Person (
+    person_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INTEGER NOT NULL,
+    has_license BOOLEAN NOT NULL DEFAULT FALSE,
+    car_id INTEGER REFERENCES Car(car_id)
+);
+
+ALTER TABLE Person
+ADD CONSTRAINT age_check CHECK (age >= 0);
