@@ -14,6 +14,7 @@ import ru.hogwarts.school.service.StudentService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/students")
@@ -96,7 +97,12 @@ public class StudentController {
 
     @GetMapping("/name-starts-with-a")
     public List<String> getStudentsNameStartsWithA() {
-        return studentService.getStudentsNameStartsWithA();
+        return studentService.getAllStudents().stream()
+                .map(Student::getName)
+                .filter(name -> name.startsWith("А"))  // или "A" для латиницы
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/average-age-stream")
