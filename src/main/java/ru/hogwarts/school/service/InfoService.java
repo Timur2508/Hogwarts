@@ -1,9 +1,14 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
+import ru.hogwarts.school.model.Faculty;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
+
 @Service
 public class InfoService {
 
@@ -33,4 +38,12 @@ public class InfoService {
                 .reduce(0, Integer::sum);
     }
 
+    @GetMapping("/longest-name")
+    public String getLongestFacultyName(FacultyService facultyService) {
+        return facultyService.getAllFaculties().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "No faculties found"));
+    }
 }
